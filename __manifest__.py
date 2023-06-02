@@ -1,28 +1,35 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Casdoor OAuth",
+    'name': "df_erp_casdoor_site_auth",
 
-    'summary': """OAuth plugin for Odoo by Casdoor""",
+    'summary': """
+        Short (1 phrase/line) summary of the module's purpose, used as
+        subtitle on modules listing or apps.openerp.com""",
 
     'description': """
-        It uses Casdoor's OAuth feature to log in Odoo for convenience.
+        Long description of module's purpose
     """,
 
-    'author': "ffyuanda",
-    'website': "https://github.com/casdoor/odoo-casdoor-oauth",
+    'author': "My Company",
+    'website': "https://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
+    # Check https://github.com/odoo/odoo/blob/16.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Tools',
-    'version': '1.0',
+    'category': 'Uncategorized',
+    'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'auth_oauth', 'portal'],
+    'depends': ['base'],
 
     # always loaded
     'data': [
-        'views/res_config_settings_views.xml',
-        'data/casdoor_oauth_data.xml',
+        # 'security/ir.model.access.csv',
+        'views/views.xml',
+        'views/templates.xml',
+    ],
+    # only loaded in demonstration mode
+    'demo': [
+        'demo/demo.xml',
     ],
 }
