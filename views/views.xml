@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="df_erp_casdoor_site_auth.list">
+      <field name="name">df_erp_casdoor_site_auth list</field>
+      <field name="model">df_erp_casdoor_site_auth.df_erp_casdoor_site_auth</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="df_erp_casdoor_site_auth.action_window">
+      <field name="name">df_erp_casdoor_site_auth window</field>
+      <field name="res_model">df_erp_casdoor_site_auth.df_erp_casdoor_site_auth</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="df_erp_casdoor_site_auth.action_server">
+      <field name="name">df_erp_casdoor_site_auth server</field>
+      <field name="model_id" ref="model_df_erp_casdoor_site_auth_df_erp_casdoor_site_auth"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="df_erp_casdoor_site_auth" id="df_erp_casdoor_site_auth.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="df_erp_casdoor_site_auth.menu_1" parent="df_erp_casdoor_site_auth.menu_root"/>
+    <menuitem name="Menu 2" id="df_erp_casdoor_site_auth.menu_2" parent="df_erp_casdoor_site_auth.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="df_erp_casdoor_site_auth.menu_1_list" parent="df_erp_casdoor_site_auth.menu_1"
+              action="df_erp_casdoor_site_auth.action_window"/>
+    <menuitem name="Server to list" id="df_erp_casdoor_site_auth" parent="df_erp_casdoor_site_auth.menu_2"
+              action="df_erp_casdoor_site_auth.action_server"/>
+-->
+  </data>
+</odoo>

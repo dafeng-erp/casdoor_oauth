@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_df_erp_casdoor_site_auth_df_erp_casdoor_site_auth,df_erp_casdoor_site_auth.df_erp_casdoor_site_auth,model_df_erp_casdoor_site_auth_df_erp_casdoor_site_auth,base.group_user,1,1,1,1
