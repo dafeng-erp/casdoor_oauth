@@ -7,12 +7,13 @@ class df_erp_casdoor_site_auth(models.Model):
     """
     https://github.com/casdoor/casdoor-python-sdk
     """
-    _name = 'df_erp_casdoor_site_auth.df_erp_casdoor_site_auth'
+    _name = 'df.auth.setting'
     _description = 'cassdor登录配置'
 
     casdoor_login_url = fields.Char()
     casdoor_register_url = fields.Char()
     domain_name = fields.Char()
+    domain_id = fields.Char()
     casdoor_endpoint = fields.Char()
     casdoor_client_id = fields.Char()
     casdoor_client_secret = fields.Char()
@@ -27,12 +28,13 @@ class df_erp_casdoor_site_auth_user(models.Model):
     """
     https://github.com/casdoor/casdoor-python-sdk
     """
-    _name = 'df_erp_casdoor_site_auth.extra_user'
+    _name = 'df.auth.setting'
     _description = 'cassdor登录配置'
 
     user_email = fields.Char()
     user_name = fields.Char()
     domain_name = fields.Char()
+    domain_id = fields.Char()
     password = fields.Char()
     user_id = fields.Char()
     casdoor_code = fields.Char()

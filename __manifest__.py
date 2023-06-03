@@ -3,11 +3,11 @@
     'name': "df_erp_casdoor_site_auth",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+       用于对接casdoor的登录, 多站点情况下独立走casdoor
+       """,
 
     'description': """
-        Long description of module's purpose
+       用于对接casdoor的登录, 多站点情况下独立走casdoor
     """,
 
     'author': "dafeng-erp",
@@ -16,7 +16,7 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/16.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Uncategorized',
+    'category': 'Website',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
