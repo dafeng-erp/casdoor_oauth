@@ -21,20 +21,22 @@ from cryptography.hazmat.backends import default_backend
 import jwt
 
 import requests
-
+import logging
 from .user import User
+
+logger = logging.getLogger(__name__)
 
 
 class CasdoorSDK:
     def __init__(
-        self,
-        endpoint: str,
-        client_id: str,
-        client_secret: str,
-        certificate: str,
-        org_name: str,
-        application_name: str,
-        front_endpoint: str = None
+            self,
+            endpoint: str,
+            client_id: str,
+            client_secret: str,
+            certificate: str,
+            org_name: str,
+            application_name: str,
+            front_endpoint: str = None
     ):
         self.endpoint = endpoint
         if front_endpoint:
@@ -91,6 +93,7 @@ class CasdoorSDK:
         :return: token: OAuth token
         """
         response = self.oauth_token_request(code, username, password)
+        logger.debug("casdoor:response:{0}".format(response.text))
         token = response.json()
 
         return token
@@ -185,6 +188,7 @@ class CasdoorSDK:
         :return: Response from Casdoor
         """
         url = self.endpoint + "/api/login/oauth/access_token"
+        logger.debug("casdoor:request: {0} {1}".format(url, payload))
         response = requests.post(url, payload)
         return response
 
@@ -325,6 +329,7 @@ class CasdoorSDK:
             for i in range(0, len(rule)):
                 result.update({"v{0}".format(i): rule[i]})
             return result
+
         params = [map_rule(permission_rules[i], i)
                   for i in range(0, len(permission_rules))]
         r = requests.post(url, json=params, params=query_params)
@@ -335,8 +340,8 @@ class CasdoorSDK:
         enforce_results = r.json()
 
         if not isinstance(enforce_results, list) or \
-           len(enforce_results) == 0 or \
-           not isinstance(enforce_results[0], bool):
+                len(enforce_results) == 0 or \
+                not isinstance(enforce_results[0], bool):
             error_str = "Casdoor response error:\n" + r.text
             raise ValueError(error_str)
 

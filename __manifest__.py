@@ -11,7 +11,7 @@
     """,
 
     'author': "dafeng-erp",
-    'website': "https://www.yourcompany.com",
+    'website': "https://www.dafengstudio.cn",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/16.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web'],
+    'depends': ['base', 'web', 'website', 'auth_signup', 'website'],
 
     # always loaded
     'data': [
@@ -32,4 +32,6 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'installable': True,
+    "application": True,
 }
