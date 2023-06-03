@@ -12,6 +12,7 @@ class df_erp_casdoor_site_auth(models.Model):
 
     casdoor_login_url = fields.Char()
     casdoor_register_url = fields.Char()
+    casdoor_forget_url = fields.Char()
     domain_name = fields.Char()
     domain_id = fields.Char()
     casdoor_endpoint = fields.Char()
