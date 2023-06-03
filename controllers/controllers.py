@@ -205,7 +205,13 @@ class DfErpCasdoorSiteRegister(http.Controller):
     def df_erp_web_auth_signup(self, *args, **kw):
         logger.debug("casdoor:signup:{}", args)
         casdoor_setting_model = self.get_site_casdoor_setting(request)
-        return request.redirect(casdoor_setting_model.casdoor_register_url, 303)
+        return werkzeug.utils.redirect(casdoor_setting_model['casdoor_register_url'], 302)
+
+    @http.route('/web/df-erp/forget', type='http', auth='public', website=True, sitemap=False, methods=['GET'], )
+    def df_erp_web_auth_signup(self, *args, **kw):
+        logger.debug("casdoor:signup:{}", args)
+        casdoor_setting_model = self.get_site_casdoor_setting(request)
+        return werkzeug.utils.redirect(casdoor_setting_model['casdoor_forget_url'], 302)
 
     @http.route('/x/web/signup', type='http', auth='public', website=True, sitemap=False)
     def web_auth_signup(self, *args, **kw):
