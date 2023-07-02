@@ -7,3 +7,5 @@ casdoor oauth for odoo16
 
 tks for https://github.com/casdoor/odoo-casdoor-oauth
 
+
+http://git.dafengstudio.cn/dafeng_erp/casdoor_oauth
