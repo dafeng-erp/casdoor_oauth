@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class DfErpCasdoorSiteAuth(http.Controller):
     """
-
+    登录模块
     """
 
     def get_site_casdoor_setting(self, request_session):
