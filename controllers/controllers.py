@@ -8,6 +8,7 @@ from ..models.models import df_erp_casdoor_site_auth
 import logging
 import werkzeug.utils
 import uuid
+import xmlrpc.client
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,12 @@ class DfErpCasdoorSiteAuth(http.Controller):
     def query_site_auth_setting(self, ):
         self.env['df.auth.setting'].search
 
+    @property
+    def rpc_client(self):
+        if not hasattr(self,"_xmlclient"):
+            url = 'http://127.0.0.1:8069'
+            self._xmlclient = xmlrpc.client.ServerProxy('{0}/xmlrpc/2/object'.format(url))
+        return self._xmlclient
     def login_or_signup(self, request_session):
         """
         {'owner': 'dourawards', 'name': 'test-login', 'createdTime': '2023-06-02T22:55:36+08:00', 'updatedTime': '', 'id': 'fd194c4f-027f-495a-8acb-8ee6c042a689', 'type': 'normal-user', 'password': '', 'passwordSalt': '', 'displayName': 'test-login', 'firstName': '', 'lastName': '', 'avatar': 'https://cdn.casbin.org/img/casbin.svg', 'permanentAvatar': '', 'email': 'jffoeg@example.com', 'emailVerified': False, 'phone': '71600376754', 'location': '', 'address': [], 'affiliation': 'Example Inc.', 'title': '', 'idCardType': '', 'idCard': '', 'homepage': '', 'bio': '', 'region': '', 'language': '', 'gender': '', 'birthday': '', 'education': '', 'score': 0, 'karma': 0, 'ranking': 2, 'isDefaultAvatar': False, 'isOnline': False, 'isAdmin': True, 'isGlobalAdmin': True, 'isForbidden': False, 'isDeleted': False, 'signupApplication': 'dourawards.com', 'hash': '', 'preHash': '', 'createdIp': '', 'lastSigninTime': '', 'lastSigninIp': '', 'ldap': '', 'properties': {}, 'roles': [], 'permissions': [], 'lastSigninWrongTime': '', 'signinWrongTimes': 0, 'tokenType': 'access-token', 'tag': 'staff', 'scope': 'read', 'iss': 'https://auth.dafengstudio.cn', 'sub': 'fd194c4f-027f-495a-8acb-8ee6c042a689', 'aud': ['774cec2af07a88c8b554'], 'exp': 1691847464, 'nbf': 1685799464, 'iat': 1685799464, 'jti': 'admin/c0a69378-4f03-48f0-a1c6-ade8dc012e95'}
@@ -120,11 +127,9 @@ class DfErpCasdoorSiteAuth(http.Controller):
         domain = [(
             "login", '=', email,
         ), ("website_id", '=', website_id)]
-        import xmlrpc.client
-        url = 'http://127.0.0.1:8069'
-        models = xmlrpc.client.ServerProxy('{0}/xmlrpc/2/object'.format(url))
+
         # if_existed = request_session.env['res.users'].sudo().search_count(domain)
-        if_existed = models.execute_kw(request_session.db,
+        if_existed = self.rpc_client.execute_kw(request_session.db,
                                        casdoor_setting_model['operation_user_id'],
                                        casdoor_setting_model['operation_password'], 'res.users', 'search_count',
                                        (domain,))
@@ -142,7 +147,7 @@ class DfErpCasdoorSiteAuth(http.Controller):
                 "website_id": website_id
             }
             logger.debug("df:casdoor:create_new_user:{0}".format(create_new_user))
-            user_id = models.execute_kw(request_session.db,
+            user_id = self.rpc_client.execute_kw(request_session.db,
                                         casdoor_setting_model['operation_user_id'],
                                         casdoor_setting_model['operation_password'], 'res.users', 'create',
                                         [
