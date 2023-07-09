@@ -2,7 +2,9 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <content url="file://$MODULE_DIR$/../../odoo-extra-addone/odoo-16.0" />
+    <content url="file://$MODULE_DIR$/../../odoo-extra-addone/odoo-16.0">
+      <sourceFolder url="file://$MODULE_DIR$/../../odoo-extra-addone/odoo-16.0" isTestSource="false" />
+    </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (venv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

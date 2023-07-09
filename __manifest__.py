@@ -27,11 +27,20 @@
         # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'views/dferp_casdoor_site_auth_login.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    'assets': {
+        # 'web.assets_backend': [
+        #    'jrizju_extra_module/static/src/js/component.js'
+        # ],
+        'web.assets_frontend': [
+            "casdoor_oauth/static/src/js/casdoor-js-sdk.js",
+            "casdoor_oauth/static/src/js/casdoor-login.js",
+        ]},
     'installable': True,
     "application": True,
 }

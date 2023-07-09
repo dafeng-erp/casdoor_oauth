@@ -9,7 +9,8 @@ import logging
 import werkzeug.utils
 import uuid
 import xmlrpc.client
-
+from werkzeug.wrappers import Request, Response
+import requests
 logger = logging.getLogger(__name__)
 
 
@@ -66,6 +67,78 @@ class DfErpCasdoorSiteAuth(http.Controller):
         casdoor_setting_model = self.get_site_casdoor_setting(request)
         return werkzeug.utils.redirect(casdoor_setting_model.get('casdoor_login_url', '/web/login'), 302)
 
+    iframe_template = '''
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign-In</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="//raw.githubusercontent.com/micahbaumann/perfect-iframe/main/perfectiframe.js"></script>
+    <script type="text/javascript">
+        let s=`(function(){
+              let storageOrUndefined;
+            
+              try {
+                storageOrUndefined = window.localStorage;
+              } catch (e) {
+                storageOrUndefined = undefined;
+              }
+            
+              const isIframe = window !== window.top;
+             
+              if (isIframe) {
+                  const lsProxy = new Proxy(
+                  {},
+                  {
+                    get: (_, prop, __) => (argument) => {
+                      if (!storageOrUndefined) {
+                        return null;
+                      }
+            
+                      try {
+                        return storageOrUndefined[prop](argument);
+                      } catch (e) {
+                        return null;
+                      }
+                    },
+                  }
+                );
+            
+                Object.defineProperty(window, "localStorage", {
+                  value: lsProxy,
+                  configurable: true,
+                  enumerable: true,
+                  writable: false,
+                });
+              }
+          })();`
+          function injectLocalStorage() {
+            window.frames[0].eval(s);
+            console.log("iframe loaded");
+          }
+        </script>
+</head>
+  <body>
+        <iframe width="900" height="506" src="iframe_url" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen
+        sandbox="allow-scripts allow-same-origin allow-forms"
+        onload="injectLocalStorage()"
+        >
+        </iframe>
+
+        
+  </body>
+</html>
+    '''
+
+    @http.route('/web/df-erp/login.html', type='http', auth="public", methods=['GET'], website=True)
+    def df_erp_web_login_html(self, redirect=None, **kw):
+        logger.debug("casdoor:login:{0}".format(redirect))
+        casdoor_setting_model = self.get_site_casdoor_setting(request)
+        url = casdoor_setting_model.get('casdoor_login_url', '/web/login') + "&silentSignin=1"
+        return Response(self.iframe_template.replace("iframe_url",url), mimetype='text/html; charset=utf-8')
+
     @http.route('/web/admin/login', type='http', auth="public")
     def web_login(self, redirect=None, **kw):
         super(DfErpCasdoorSiteAuth, self).web_login(redirect=redirect, **kw)
@@ -91,10 +164,15 @@ class DfErpCasdoorSiteAuth(http.Controller):
 
     @property
     def rpc_client(self):
-        if not hasattr(self,"_xmlclient"):
+        """
+        切到管理员用户操作
+        :return:
+        """
+        if not hasattr(self, "_rpc_client"):
             url = 'http://127.0.0.1:8069'
-            self._xmlclient = xmlrpc.client.ServerProxy('{0}/xmlrpc/2/object'.format(url))
-        return self._xmlclient
+            self._xmlc_rpc_clientlient = xmlrpc.client.ServerProxy('{0}/xmlrpc/2/object'.format(url))
+        return self._xmlc_rpc_clientlient
+
     def login_or_signup(self, request_session):
         """
         {'owner': 'dourawards', 'name': 'test-login', 'createdTime': '2023-06-02T22:55:36+08:00', 'updatedTime': '', 'id': 'fd194c4f-027f-495a-8acb-8ee6c042a689', 'type': 'normal-user', 'password': '', 'passwordSalt': '', 'displayName': 'test-login', 'firstName': '', 'lastName': '', 'avatar': 'https://cdn.casbin.org/img/casbin.svg', 'permanentAvatar': '', 'email': 'jffoeg@example.com', 'emailVerified': False, 'phone': '71600376754', 'location': '', 'address': [], 'affiliation': 'Example Inc.', 'title': '', 'idCardType': '', 'idCard': '', 'homepage': '', 'bio': '', 'region': '', 'language': '', 'gender': '', 'birthday': '', 'education': '', 'score': 0, 'karma': 0, 'ranking': 2, 'isDefaultAvatar': False, 'isOnline': False, 'isAdmin': True, 'isGlobalAdmin': True, 'isForbidden': False, 'isDeleted': False, 'signupApplication': 'dourawards.com', 'hash': '', 'preHash': '', 'createdIp': '', 'lastSigninTime': '', 'lastSigninIp': '', 'ldap': '', 'properties': {}, 'roles': [], 'permissions': [], 'lastSigninWrongTime': '', 'signinWrongTimes': 0, 'tokenType': 'access-token', 'tag': 'staff', 'scope': 'read', 'iss': 'https://auth.dafengstudio.cn', 'sub': 'fd194c4f-027f-495a-8acb-8ee6c042a689', 'aud': ['774cec2af07a88c8b554'], 'exp': 1691847464, 'nbf': 1685799464, 'iat': 1685799464, 'jti': 'admin/c0a69378-4f03-48f0-a1c6-ade8dc012e95'}
@@ -130,9 +208,10 @@ class DfErpCasdoorSiteAuth(http.Controller):
 
         # if_existed = request_session.env['res.users'].sudo().search_count(domain)
         if_existed = self.rpc_client.execute_kw(request_session.db,
-                                       casdoor_setting_model['operation_user_id'],
-                                       casdoor_setting_model['operation_password'], 'res.users', 'search_count',
-                                       (domain,))
+                                                casdoor_setting_model['operation_user_id'],
+                                                casdoor_setting_model['operation_password'], 'res.users',
+                                                'search_count',
+                                                (domain,))
         default_password = "{0}".format(uuid.uuid4())
         password = casdoor_setting_model["default_password"] or default_password
         logger.debug("df:casdoor:create_new_user:password:{0}".format(password))
@@ -148,11 +227,11 @@ class DfErpCasdoorSiteAuth(http.Controller):
             }
             logger.debug("df:casdoor:create_new_user:{0}".format(create_new_user))
             user_id = self.rpc_client.execute_kw(request_session.db,
-                                        casdoor_setting_model['operation_user_id'],
-                                        casdoor_setting_model['operation_password'], 'res.users', 'create',
-                                        [
-                                            create_new_user,
-                                        ])
+                                                 casdoor_setting_model['operation_user_id'],
+                                                 casdoor_setting_model['operation_password'], 'res.users', 'create',
+                                                 [
+                                                     create_new_user,
+                                                 ])
             logger.debug("df:casdoor:create_new_user:{0}".format(user_id))
             """
             user_ids = models.execute_kw(request_session.db,

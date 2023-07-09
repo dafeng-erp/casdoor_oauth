@@ -1,24 +1,15 @@
 <odoo>
     <data>
-<!--
-        <template id="listing">
-          <ul>
-            <li t-foreach="objects" t-as="object">
-              <a t-attf-href="#{ root }/objects/#{ object.id }">
-                <t t-esc="object.display_name"/>
-              </a>
-            </li>
-          </ul>
+        <template id="df_erp_casdoor_site_auth_sigin_in" inherit_id="portal.user_sign_in" name="dferp-casdoor-auth-sign-in">
+            <xpath expr="." position="replace">
+                <li t-nocache="Profile session and user group can change unrelated to parent caches."
+                    t-nocache-_item_class="_item_class" t-nocache-_link_class="_link_class" groups="base.group_public"
+                    t-attf-class="#{_item_class} o_no_autohide_item">
+                    <a t-attf-href="/web/df-erp/login" t-attf-class="#{_link_class}">Sign in
+                        <span t-if="request.session.profile_session" class="text-danger fa fa-circle"/>
+                    </a>
+                </li>
+            </xpath>
         </template>
-        <template id="object">
-          <h1><t t-esc="object.display_name"/></h1>
-          <dl>
-            <t t-foreach="object._fields" t-as="field">
-              <dt><t t-esc="field"/></dt>
-              <dd><t t-esc="object[field]"/></dd>
-            </t>
-          </dl>
-        </template>
--->
     </data>
 </odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+<t t-name="df_erp_casdoor_site_auth.DferpCasdoorSiteAuth" owl="1">
+    <a t-attf-href="/web/df-erp/login" t-attf-class="#{_link_class}" x='df_erp_casdoor_site_auth' t-on-click="signin">Sign in
+      <span t-if="request.session.profile_session" class="text-danger fa fa-circle"/>
+    </a>
+</t>
+
+</templates>
